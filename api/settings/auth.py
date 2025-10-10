@@ -1,10 +1,9 @@
 import jwt
-from datetime import datetime, timezone
-from typing import Optional, Dict, Any
+from datetime import datetime
 from fastapi import HTTPException, status, Depends, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from .database import get_supabase_admin_client
-from .config import config
+from typing import TypedDict, Any
 
 import logging
 
@@ -32,7 +31,7 @@ class DebugHTTPBearer(HTTPBearer):
 async def verify_jwt(
     request: Request,
     credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Verify JWT token using Supabase and cache user data in request state
     """
@@ -72,16 +71,90 @@ async def verify_jwt(
         )
 
 
+class UserIdentityData(TypedDict, total=False):
+    avatar_url: str
+    email: str
+    email_verified: bool
+    full_name: str
+    iss: str
+    name: str
+    phone_verified: bool
+    picture: str
+    provider_id: str
+    sub: str
+
+
+class UserIdentity(TypedDict):
+    id: str
+    identity_id: str
+    user_id: str
+    identity_data: UserIdentityData
+    provider: str
+    created_at: datetime
+    last_sign_in_at: datetime
+    updated_at: datetime
+
+
+class UserMetadata(TypedDict, total=False):
+    avatar_url: str
+    email: str
+    email_verified: bool
+    full_name: str
+    iss: str
+    name: str
+    phone_verified: bool
+    picture: str
+    provider_id: str
+    sub: str
+
+
+class AppMetadata(TypedDict):
+    provider: str
+    providers: list[str]
+
+
+class UserTypedDict(TypedDict):
+    id: str
+    app_metadata: AppMetadata
+    user_metadata: UserMetadata
+    aud: str
+    confirmation_sent_at: datetime | None
+    recovery_sent_at: datetime | None
+    email_change_sent_at: datetime | None
+    new_email: str | None
+    new_phone: str | None
+    invited_at: datetime | None
+    action_link: str | None
+    email: str
+    phone: str
+    created_at: datetime
+    confirmed_at: datetime | None
+    email_confirmed_at: datetime | None
+    phone_confirmed_at: datetime | None
+    last_sign_in_at: datetime | None
+    role: str
+    updated_at: datetime
+    identities: list[UserIdentity]
+    is_anonymous: bool
+    factors: list[str] | None  # can refine if MFA factors are typed
+
+
+class UserContainer(TypedDict):
+    user_id: str
+    email: str
+    user: UserTypedDict
+
+
 async def get_current_user(
-    auth_data: Dict[str, Any] = Depends(verify_jwt),
-) -> Dict[str, Any]:
+    auth_data: UserContainer = Depends(verify_jwt),
+) -> UserContainer:
     """
     Get current authenticated user
     """
     return auth_data
 
 
-async def get_current_user_id(auth_data: Dict[str, Any] = Depends(verify_jwt)) -> str:
+async def get_current_user_id(auth_data: UserContainer = Depends(verify_jwt)) -> str:
     """
     Get current authenticated user ID
     """
@@ -91,10 +164,10 @@ async def get_current_user_id(auth_data: Dict[str, Any] = Depends(verify_jwt)) -
 # Optional auth dependency (for endpoints that can work with or without auth)
 async def get_optional_user(
     request: Request,
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(
+    credentials: HTTPAuthorizationCredentials | None = Depends(
         HTTPBearer(auto_error=False)
     ),
-) -> Optional[Dict[str, Any]]:
+) -> dict[str, Any] | None:
     """
     Get current user if authenticated, None otherwise
     """

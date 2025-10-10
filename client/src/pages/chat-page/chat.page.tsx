@@ -91,7 +91,27 @@ const ChatPage: React.FC = () => {
             setInputValue('');
             clearError();
             try {
-                await chatWithAmia(input.trim());
+                // Example of how to pass metadata and context (optional):
+                // const metadata = { date: new Date().toISOString(), timezone: Intl.DateTimeFormat().resolvedOptions().timeZone };
+                // const context = { user_id: 'current_user_id', session_id: 'session_123' };
+                // await chatWithAmia(input.trim(), metadata, context);
+
+                const metadata = {};
+
+                const context = {
+                    current_date: new Date().toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric',
+                        timeZone:
+                            Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    }),
+                    current_time: new Date().toLocaleTimeString(),
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                };
+
+                await chatWithAmia(input.trim(), metadata, context);
             } catch (err) {
                 console.error('Failed to send message:', err);
             }
@@ -137,7 +157,9 @@ const ChatPage: React.FC = () => {
     };
 
     return (
-        <div className={`${styles.chatPage} ${isSidebarCollapsed ? styles.sidebarCollapsed : ''}`}>
+        <div
+            className={`${styles.chatPage} ${isSidebarCollapsed ? styles.sidebarCollapsed : ''}`}
+        >
             <CollapsibleSidebar
                 isCollapsed={isSidebarCollapsed}
                 onToggle={toggleSidebar}
@@ -151,7 +173,9 @@ const ChatPage: React.FC = () => {
                 />
             </CollapsibleSidebar>
 
-            <div className={`${styles.chatPageMainContent} ${isSidebarCollapsed ? styles.sidebarCollapsed : ''}`}>
+            <div
+                className={`${styles.chatPageMainContent} ${isSidebarCollapsed ? styles.sidebarCollapsed : ''}`}
+            >
                 <div className={styles.chatHeader}></div>
 
                 <div className={styles.messagesContainer}>
@@ -178,11 +202,18 @@ const ChatPage: React.FC = () => {
                             }
                         )}
                         <div ref={messagesEndRef} />
-                        {(loading || isStreaming) && (agentMessages[agentMessages.length - 1]?.role === 'user'  || (agentMessages[agentMessages.length - 1]?.role === 'assistant' && !agentMessages[agentMessages.length - 1]?.content.trim())) && (
-                            <div className={styles.loadingContainer}>
-                                <LoadingIcon size={30} />
-                            </div>
-                        )}
+                        {(loading || isStreaming) &&
+                            (agentMessages[agentMessages.length - 1]?.role ===
+                                'user' ||
+                                (agentMessages[agentMessages.length - 1]
+                                    ?.role === 'assistant' &&
+                                    !agentMessages[
+                                        agentMessages.length - 1
+                                    ]?.content.trim())) && (
+                                <div className={styles.loadingContainer}>
+                                    <LoadingIcon size={30} />
+                                </div>
+                            )}
                         {error && (
                             <div className={styles.errorContainer}>
                                 <Text color='danger'>{error}</Text>

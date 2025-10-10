@@ -14,7 +14,11 @@ export function useReduxAgent() {
 
     // Chat with Amia using streaming
     const chatWithAmia = useCallback(
-        async (message: string) => {
+        async (
+            message: string,
+            metadata?: Record<string, any>,
+            context?: Record<string, any>
+        ) => {
             const messages: ChatMessage[] = [
                 ...agent.messages,
                 {
@@ -27,6 +31,8 @@ export function useReduxAgent() {
             return dispatch(
                 chatWithAmiaThunk({
                     messages,
+                    metadata,
+                    context,
                 })
             );
         },
@@ -35,7 +41,11 @@ export function useReduxAgent() {
 
     // Chat with Amia using sync (non-streaming)
     const chatWithAmiaSync = useCallback(
-        async (message: string) => {
+        async (
+            message: string,
+            metadata?: Record<string, any>,
+            context?: Record<string, any>
+        ) => {
             const messages: ChatMessage[] = [
                 ...agent.messages,
                 {
@@ -48,6 +58,8 @@ export function useReduxAgent() {
             return dispatch(
                 chatWithAmiaSyncThunk({
                     messages,
+                    metadata,
+                    context,
                 })
             );
         },

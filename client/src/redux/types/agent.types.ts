@@ -16,8 +16,8 @@ export interface ChatMessage {
 // API Request/Response Types
 export interface ChatWithAmiaRequest {
     messages: ChatMessage[];
-    metdata?: Record<string, string>;
-    context?: Record<string, string>;
+    metadata?: Record<string, any>;
+    context?: Record<string, any>;
 }
 
 export interface ChatWithAmiaResponse {

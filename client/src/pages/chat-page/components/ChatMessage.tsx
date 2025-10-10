@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text } from '../../../components';
 import styles from './ChatMessage.module.css';
 import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface Message {
     id: string;
@@ -53,7 +54,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
                     {isUser ? (
                         message.text
                     ) : (
-                        <Markdown>{message.text}</Markdown>
+                        <Markdown remarkPlugins={[remarkGfm]}>
+                            {message.text}
+                        </Markdown>
                     )}
                 </Text>
                 <div

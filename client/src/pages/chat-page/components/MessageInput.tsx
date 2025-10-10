@@ -29,10 +29,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
     useEffect(() => {
         const textarea = textareaRef.current;
         if (textarea) {
-            // Reset height to auto to get the correct scrollHeight
             textarea.style.height = 'auto';
-
-            // Calculate the new height
             const newHeight = Math.min(
                 Math.max(textarea.scrollHeight, MIN_HEIGHT),
                 MAX_HEIGHT

@@ -7,6 +7,10 @@ import api.core.calendar as calendar
 from api.services.google_events_service import GoogleEventsService
 from api.dependencies import get_google_events_service
 from fastapi import Depends
+from api.settings.auth import UserContainer
+import logging
+
+logger = logging.getLogger(__name__)
 
 model_client = OpenAIChatCompletionClient(
     model="openai/gpt-oss-20b",
@@ -23,22 +27,24 @@ model_client = OpenAIChatCompletionClient(
 )
 
 
-async def get_amia_agent(context: dict, metdata: dict, google_events_service: GoogleEventsService = Depends(get_google_events_service)) -> AssistantAgent:
+async def get_amia_agent(user: UserContainer, context: dict, metadata: dict, google_events_service: GoogleEventsService = Depends(get_google_events_service)) -> AssistantAgent:
     # TODO: inject other context (like the current user)
     tools = [
         calendar.get_current_week_events_wrapper(
-            user_id="test", # TODO: inject the current user
+            user_id=user["user_id"],
             google_events_service=google_events_service,
-        )
+        ),
     ]
+    context_string = f"<context>{"\n".join([f"{key.replace('_', ' ').title()}: {value}" for key, value in context.items()])}</context>"
+    logger.info(f"Context: {context_string}")
     agent = AssistantAgent(
         name="amia_agent",
         model_client=model_client,
         tools=tools,
-        system_message="You are a calendar assistant that can help with scheduling events. Your name is AMIA (stands for Am I Available?). Don't respond to questions that aren't related to schedulin. Don't respond to questions that aren't related to scheduling.",
+        system_message=f"You are a calendar assistant that can help with scheduling events. Your name is AMIA (stands for Am I Available?). Respond with valid markdown.\n\n{context_string}",
         reflect_on_tool_use=True,
         model_client_stream=True,  # Enable streaming tokens from the model client.
-        max_tool_iterations=5
+        max_tool_iterations=8
     )
     return agent
     
