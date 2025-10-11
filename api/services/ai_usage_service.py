@@ -28,6 +28,22 @@ class AiUsageService:
             updated_at=db_ai_usage.updated_at,
         )
 
+    async def create_ai_usage_entry(
+        self,
+        *,
+        user_id: str,
+        cost: float,
+        usage: dict | None = None,
+        metadata: dict | None = None,
+    ) -> AiUsageData | None:
+        """Create an AI usage entry"""
+        db_ai_usage = await self.databridge.create_ai_usage_entry(
+            user_id=user_id, cost=cost, usage=usage, metadata=metadata
+        )
+        return (
+            self._convert_db_to_model(db_ai_usage=db_ai_usage) if db_ai_usage else None
+        )
+
     async def get_ai_usage_by_id(
         self, *, ai_usage_id: str, user_id: str
     ) -> AiUsageResponse:

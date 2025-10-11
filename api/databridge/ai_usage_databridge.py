@@ -1,7 +1,9 @@
+from api.databridge.notifications_databridge import DBNotificationResponse
 from ..settings.database import get_supabase_admin_client
 from supabase import Client
 from pydantic import BaseModel
 from datetime import datetime
+import traceback
 import logging
 
 logger = logging.getLogger(__name__)
@@ -26,6 +28,31 @@ class AiUsageDatabridge:
     def __init__(self, supabase: Client) -> None:
         self.supabase = supabase
         self.ai_usage = self.supabase.table("ai_usage")
+
+    async def create_ai_usage_entry(
+        self,
+        *,
+        user_id: str,
+        cost: float,
+        usage: dict | None = None,
+        metadata: dict | None = None,
+    ) -> DBAiUsageResponse | None:
+        """Create an ai usage entry"""
+        try:
+            data = {
+                "user_id": user_id,
+                "cost": cost,
+                "usage": usage or {},
+                "metadata": metadata or {},
+            }
+            response = self.ai_usage.insert(data).execute()
+            if not response.data:
+                return None
+            _data = response.data[0]
+            return DBAiUsageResponse(**_data)
+        except Exception as e:
+            traceback.print_exc()
+            logger.error(f"Error creating AI usage: {e}")
 
     async def get_ai_usage_by_id(
         self, *, ai_usage_id: str, user_id: str
