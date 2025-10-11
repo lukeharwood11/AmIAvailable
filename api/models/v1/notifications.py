@@ -13,30 +13,31 @@ class CreateNotificationRequest(BaseModel):
 
     title: str = Field(
         description="Notification title",
-        example="New Event Request",
+        examples=["New Event Request"],
         min_length=1,
         max_length=255,
     )
     message: str = Field(
         description="Notification message",
-        example="You have a new event request that needs approval",
+        examples=["You have a new event request that needs approval"],
         min_length=1,
         max_length=1000,
     )
     payload: dict[str, Any] = Field(
         default_factory=dict,
         description="Additional payload data for the notification",
-        example={"event_request_id": "req-123", "type": "event_request"},
+        examples=[{"event_request_id": "req-123", "type": "event_request"}],
     )
 
 
 class UpdateNotificationRequest(BaseModel):
     """Request model for updating a notification"""
+
     is_read: bool | None = Field(
-        None, description="Mark notification as read/unread", example=True
+        None, description="Mark notification as read/unread", examples=[True]
     )
     is_deleted: bool | None = Field(
-        None, description="Mark notification as deleted", example=False
+        None, description="Mark notification as deleted", examples=[False]
     )
 
 
@@ -44,10 +45,10 @@ class GetNotificationsRequest(BaseModel):
     """Request model for getting notifications"""
 
     is_read: bool | None = Field(
-        None, description="Filter by read status", example=False
+        None, description="Filter by read status", examples=[False]
     )
     is_deleted: bool | None = Field(
-        None, description="Filter by deleted status", example=False
+        None, description="Filter by deleted status", examples=[False]
     )
     skip: int = Field(
         default=0, ge=0, description="Number of records to skip for pagination"
@@ -68,7 +69,7 @@ class DeleteNotificationRequest(BaseModel):
 
     notification_id: str = Field(
         description="UUID of the notification to delete",
-        example="notif-123e4567-e89b-12d3-a456-426614174000",
+        examples=["notif-123e4567-e89b-12d3-a456-426614174000"],
     )
 
 

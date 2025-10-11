@@ -117,7 +117,7 @@ class EventRequestApprovalsService:
 
         approvals = [self._convert_db_to_model(approval) for approval in db_approvals]
 
-        filters = {}
+        filters: dict[str, str | bool] = {}
         if event_request_id:
             filters["event_request_id"] = event_request_id
         if user_id:

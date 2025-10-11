@@ -10,24 +10,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class DebugHTTPBearer(HTTPBearer):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    async def __call__(self, request: Request) -> HTTPAuthorizationCredentials:
-        logger.info("=== HTTPBearer.__call__ invoked ===")
-        logger.info("=== HTTPBearer.__call__ invoked ===")
-        try:
-            result = await super().__call__(request)
-            logger.info(f"HTTPBearer success, got credentials: {result}")
-            return result
-        except Exception as e:
-            logger.error(f"HTTPBearer failed: {str(e)}")
-            logger.error(f"HTTPBearer exception type: {type(e)}")
-            logger.info(f"DEBUG: HTTPBearer failed: {str(e)}")
-            raise
-
-
 async def verify_jwt(
     request: Request,
     credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
@@ -45,7 +27,7 @@ async def verify_jwt(
         supabase = get_supabase_admin_client()
         # Verify the JWT token
         response = supabase.auth.get_user(token)
-        if not response.user:
+        if not response or not response.user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid authentication token",
@@ -63,7 +45,7 @@ async def verify_jwt(
 
         return user_data
 
-    except Exception as e:
+    except Exception:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication token",

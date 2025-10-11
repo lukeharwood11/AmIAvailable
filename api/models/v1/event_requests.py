@@ -15,15 +15,15 @@ class EventDateTime(BaseModel):
     date: str | None = Field(
         None,
         description="Date in YYYY-MM-DD format for all-day events",
-        example="2024-01-15",
+        examples=["2024-01-15"],
     )
     date_time: datetime | None = Field(
         None,
         description="Date and time for timed events",
-        example="2024-01-15T14:30:00",
+        examples=["2024-01-15T14:30:00"],
     )
     time_zone: str | None = Field(
-        None, description="Time zone identifier", example="America/New_York"
+        None, description="Time zone identifier", examples=["America/New_York"]
     )
 
 
@@ -34,50 +34,58 @@ class EventDateTime(BaseModel):
 
 class CreateEventRequestRequest(BaseModel):
     """Request model for creating a new event request"""
+
     google_event_id: str | None = Field(
         None,
         description="Google Calendar event ID if created from Google Calendar",
-        example="abc123def456",
+        examples=["abc123def456"],
     )
-    title: str | None = Field(None, description="Event title", example="Team Meeting")
+    title: str | None = Field(
+        None, description="Event title", examples=["Team Meeting"]
+    )
     location: str | None = Field(
-        None, description="Event location", example="Conference Room A"
+        None, description="Event location", examples=["Conference Room A"]
     )
     description: str | None = Field(
         None,
         description="Event description",
-        example="Weekly team sync to discuss project progress",
+        examples=["Weekly team sync to discuss project progress"],
     )
     start_date: EventDateTime = Field(
         description="Event start date and time, use date_time if time is given, otherwise use date (example: 2024-01-15)",
-        example={"date_time": "2024-01-15T14:30:00", "time_zone": "America/New_York"},
+        examples=[
+            {"date_time": "2024-01-15T14:30:00", "time_zone": "America/New_York"}
+        ],
     )
     end_date: EventDateTime = Field(
         description="Event end date and time",
-        example={"date_time": "2024-01-15T15:30:00", "time_zone": "America/New_York"},
+        examples=[
+            {"date_time": "2024-01-15T15:30:00", "time_zone": "America/New_York"}
+        ],
     )
     importance_level: int = Field(
         1,
         ge=1,
         le=5,
         description="Importance level from 1 (low) to 5 (critical)",
-        example=3,
+        examples=[3],
     )
     notes: str | None = Field(
         None,
         description="Additional notes for the event",
-        example="Please bring your laptops",
+        examples=["Please bring your laptops"],
     )
     approvers: list[era_models.EventRequestApprovalUser] | None = Field(
         default_factory=list,
         description="List of user IDs that are approvers",
-        example=[{"user_id": "user-123", "required": True}],
+        examples=[[{"user_id": "user-123", "required": True}]],
     )
 
 
 class SmartParseEventRequestRequest(CreateEventRequestRequest):
     current_date: datetime = Field(
-        description="Current date with timezone", example=datetime.now(timezone(timedelta(hours=-5)))
+        description="Current date with timezone",
+        examples=[datetime.now(timezone(timedelta(hours=-5)))],
     )
 
 
@@ -86,40 +94,44 @@ class UpdateEventRequestRequest(BaseModel):
 
     event_request_id: str = Field(
         description="UUID of the event request to update",
-        example="req-123e4567-e89b-12d3-a456-426614174000",
+        examples=["req-123e4567-e89b-12d3-a456-426614174000"],
     )
     google_event_id: str | None = Field(
-        None, description="Google Calendar event ID", example="abc123def456"
+        None, description="Google Calendar event ID", examples=["abc123def456"]
     )
     title: str | None = Field(
-        None, description="Updated event title", example="Updated Team Meeting"
+        None, description="Updated event title", examples=["Updated Team Meeting"]
     )
     location: str | None = Field(
-        None, description="Updated event location", example="Conference Room B"
+        None, description="Updated event location", examples=["Conference Room B"]
     )
     description: str | None = Field(
         None,
         description="Updated event description",
-        example="Updated weekly team sync",
+        examples=["Updated weekly team sync"],
     )
     start_date: EventDateTime | None = Field(
         None,
         description="Updated event start date and time",
-        example={"date_time": "2024-01-15T15:00:00", "time_zone": "America/New_York"},
+        examples=[
+            {"date_time": "2024-01-15T15:00:00", "time_zone": "America/New_York"}
+        ],
     )
     end_date: EventDateTime | None = Field(
         None,
         description="Updated event end date and time",
-        example={"date_time": "2024-01-15T16:00:00", "time_zone": "America/New_York"},
+        examples=[
+            {"date_time": "2024-01-15T16:00:00", "time_zone": "America/New_York"}
+        ],
     )
     importance_level: int | None = Field(
-        None, ge=1, le=5, description="Updated importance level", example=4
+        None, ge=1, le=5, description="Updated importance level", examples=[4]
     )
     status: Literal["pending", "approved", "rejected"] | None = Field(
-        None, description="Updated event request status", example="approved"
+        None, description="Updated event request status", examples=["approved"]
     )
     notes: str | None = Field(
-        None, description="Updated notes", example="Updated notes for the meeting"
+        None, description="Updated notes", examples=["Updated notes for the meeting"]
     )
 
 
@@ -127,25 +139,29 @@ class GetEventRequestsRequest(BaseModel):
     """Request model for getting event requests"""
 
     status: Literal["pending", "approved", "rejected"] | None = Field(
-        None, description="Filter by event request status", example="pending"
+        None, description="Filter by event request status", examples=["pending"]
     )
     importance_level: int | None = Field(
-        None, ge=1, le=5, description="Filter by importance level", example=3
+        None, ge=1, le=5, description="Filter by importance level", examples=[3]
     )
     start_date_from: EventDateTime | None = Field(
         None,
         description="Filter events starting from this date",
-        example={"date_time": "2024-01-01T00:00:00", "time_zone": "America/New_York"},
+        examples=[
+            {"date_time": "2024-01-01T00:00:00", "time_zone": "America/New_York"}
+        ],
     )
     start_date_to: EventDateTime | None = Field(
         None,
         description="Filter events starting before this date",
-        example={"date_time": "2024-12-31T23:59:59", "time_zone": "America/New_York"},
+        examples=[
+            {"date_time": "2024-12-31T23:59:59", "time_zone": "America/New_York"}
+        ],
     )
     created_by: str | None = Field(
         None,
         description="Filter by creator user ID",
-        example="user-123e4567-e89b-12d3-a456-426614174000",
+        examples=["user-123e4567-e89b-12d3-a456-426614174000"],
     )
 
 
@@ -153,17 +169,17 @@ class ListEventRequestsWithApprovalsRequest(BaseModel):
     """Request model for listing event requests with approval status"""
 
     status: Literal["pending", "approved", "rejected"] | None = Field(
-        None, description="Filter by event request status", example="pending"
+        None, description="Filter by event request status", examples=["pending"]
     )
     skip: int = Field(
-        0, ge=0, description="Number of records to skip for pagination", example=0
+        0, ge=0, description="Number of records to skip for pagination", examples=[0]
     )
     take: int = Field(
         50,
         ge=1,
         le=100,
         description="Number of records to return (max 100)",
-        example=25,
+        examples=[25],
     )
 
 
@@ -172,7 +188,7 @@ class DeleteEventRequestRequest(BaseModel):
 
     event_request_id: str = Field(
         description="UUID of the event request to delete",
-        example="req-123e4567-e89b-12d3-a456-426614174000",
+        examples=["req-123e4567-e89b-12d3-a456-426614174000"],
     )
 
 
@@ -180,45 +196,55 @@ class DeleteEventRequestRequest(BaseModel):
 # RESPONSE MODELS
 # ============================================================================
 
+
 class SmartParseEvent(BaseModel):
     """Model for smart parse event"""
-    title: str | None = Field(None, description="Event title", example="Team Meeting")
+
+    title: str | None = Field(
+        None, description="Event title", examples=["Team Meeting"]
+    )
     location: str | None = Field(
-        None, description="Event location", example="Conference Room A"
+        None, description="Event location", examples=["Conference Room A"]
     )
     description: str | None = Field(
         None,
         description="Event description",
-        example="Weekly team sync to discuss project progress",
+        examples=["Weekly team sync to discuss project progress"],
     )
     start_date: EventDateTime = Field(
         description="Event start date and time, use date_time if time is given, otherwise use date (example: 2024-01-15)",
-        example={"date_time": "2024-01-15T14:30:00", "time_zone": "America/New_York"},
+        examples=[
+            {"date_time": "2024-01-15T14:30:00", "time_zone": "America/New_York"}
+        ],
     )
     end_date: EventDateTime = Field(
         description="Event end date and time",
-        example={"date_time": "2024-01-15T15:30:00", "time_zone": "America/New_York"},
+        examples=[
+            {"date_time": "2024-01-15T15:30:00", "time_zone": "America/New_York"}
+        ],
     )
     importance_level: int = Field(
         1,
         ge=1,
         le=5,
         description="Importance level from 1 (low) to 5 (critical)",
-        example=3,
+        examples=[3],
     )
     notes: str | None = Field(
         None,
         description="Additional notes for the event",
-        example="Please bring your laptops",
+        examples=["Please bring your laptops"],
     )
     approvers: list[era_models.EventRequestApprovalUser] | None = Field(
         default_factory=list,
         description="List of user IDs that are approvers",
-        example=[{"user_id": "user-123", "required": True}],
+        examples=[[{"user_id": "user-123", "required": True}]],
     )
+
 
 class SmartParseEventRequestResponse(BaseModel):
     """Response model for smart parse event request"""
+
     status: str = "success"
     event_request: SmartParseEvent
     message: str = "Event request parsed successfully"

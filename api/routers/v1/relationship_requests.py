@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import Dict, Any
-import asyncio 
+import asyncio
 
 from api.settings.auth import get_current_user_id, get_current_user
 from api.dependencies import get_relationship_requests_service
@@ -15,7 +15,11 @@ from api.models.v1.relationship_requests import (
     RelationshipRequestUpdateResponse,
     RelationshipRequestDeleteResponse,
 )
-from api.services.notifications_service import RelationshipNotificationPayload, User, NotificationsService
+from api.services.notifications_service import (
+    RelationshipNotificationPayload,
+    User,
+    NotificationsService,
+)
 from api.dependencies import get_notifications_service
 
 

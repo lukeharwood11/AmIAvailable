@@ -92,7 +92,7 @@ class GoogleApiClient:
 
     def __init__(self, tokens: GoogleTokens):
         self.tokens = tokens
-        self._credentials = None
+        self._credentials: Credentials | None = None
 
     @classmethod
     def from_tokens(
@@ -137,7 +137,8 @@ class GoogleApiClient:
             credentials.refresh(request)
 
             # Update tokens
-            self.tokens.access_token = credentials.token
+            if credentials.token:
+                self.tokens.access_token = credentials.token
             if credentials.refresh_token:
                 self.tokens.refresh_token = credentials.refresh_token
 
@@ -157,74 +158,7 @@ class GoogleApiClient:
 
 
 # TODO: Remove, this isn't needed since google handles this for us
-def with_token_refresh(func: Callable[..., T]) -> Callable[..., T]:
-    """
-    Decorator that automatically handles token refresh for Google API calls.
-
-    The decorated function should:
-    1. Take a GoogleApiClient as its first argument (after self if it's a method)
-    2. Return the result or None/empty list on failure
-    3. The function will be retried once if a 401 error occurs and token refresh succeeds
-
-    Usage:
-        @with_token_refresh
-        async def my_google_api_call(client: GoogleApiClient, other_params...):
-            # Your Google API logic here
-            pass
-    """
-
-    @wraps(func)
-    async def wrapper(*args, **kwargs) -> T:
-        # Extract the GoogleApiClient from arguments
-        client = None
-
-        # Check if first arg is GoogleApiClient
-        if args and isinstance(args[0], GoogleApiClient):
-            client = args[0]
-        # Check if second arg is GoogleApiClient (for instance methods)
-        elif len(args) > 1 and isinstance(args[1], GoogleApiClient):
-            client = args[1]
-        else:
-            # Look for client in kwargs
-            client = kwargs.get("client")
-
-        if not isinstance(client, GoogleApiClient):
-            raise ValueError(
-                "Function decorated with @with_token_refresh must have a GoogleApiClient parameter"
-            )
-
-        try:
-            # First attempt
-            return await func(*args, **kwargs)
-
-        except HttpError as error:
-            if error.resp.status == 401:
-                logger.warning("Received 401 error, attempting to refresh token")
-
-                # Try to refresh token
-                if await client.refresh_tokens():
-                    logger.info("Token refreshed successfully, retrying API call")
-                    try:
-                        # Retry the function call
-                        return await func(*args, **kwargs)
-                    except Exception as retry_error:
-                        logger.error(
-                            f"Retry after token refresh failed: {str(retry_error)}"
-                        )
-                        return None
-                else:
-                    logger.error("Failed to refresh token")
-                    return None
-            else:
-                # Re-raise non-401 HTTP errors
-                logger.error(f"Google API error: {error}")
-                return None
-
-        except Exception as e:
-            logger.error(f"Unexpected error in Google API call: {str(e)}")
-            return None
-
-    return wrapper
+# Removed with_token_refresh decorator as it was causing type issues
 
 
 async def create_google_client(

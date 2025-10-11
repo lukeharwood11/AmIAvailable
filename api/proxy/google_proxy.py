@@ -1,13 +1,12 @@
 import logging
 from typing import Any
 from datetime import datetime, timedelta
-from .google_client import GoogleApiClient, with_token_refresh, create_google_client
+from .google_client import GoogleApiClient, create_google_client
 from .models.google_models import CalendarEvent, CalendarInfo
 
 logger = logging.getLogger(__name__)
 
 
-@with_token_refresh
 async def _get_calendar_events_with_client(
     client: GoogleApiClient,
 ) -> list[CalendarEvent] | None:
@@ -91,7 +90,6 @@ async def get_google_calendar_events(
 # ============================================================================
 
 
-@with_token_refresh
 async def _list_events_with_client(
     client: GoogleApiClient,
     calendar_id: str = "primary",
@@ -183,7 +181,6 @@ async def list_events(
         return None
 
 
-@with_token_refresh
 async def _get_event_with_client(
     client: GoogleApiClient, event_id: str, calendar_id: str = "primary"
 ) -> CalendarEvent | None:
@@ -234,7 +231,6 @@ async def get_event_details(
         return None
 
 
-@with_token_refresh
 async def _create_event_with_client(
     client: GoogleApiClient,
     event_data: dict[str, Any],
@@ -301,7 +297,6 @@ async def create_event(
         return None
 
 
-@with_token_refresh
 async def _update_event_with_client(
     client: GoogleApiClient,
     event_id: str,
@@ -372,7 +367,6 @@ async def update_event(
         return None
 
 
-@with_token_refresh
 async def _delete_event_with_client(
     client: GoogleApiClient,
     event_id: str,
@@ -456,7 +450,6 @@ async def search_events(
         return None
 
 
-@with_token_refresh
 async def _list_calendars_with_client(
     client: GoogleApiClient,
 ) -> list[CalendarInfo] | None:
@@ -509,7 +502,6 @@ async def list_calendars(
         return None
 
 
-@with_token_refresh
 async def _quick_add_event_with_client(
     client: GoogleApiClient,
     text: str,
@@ -574,7 +566,6 @@ async def quick_add_event(
         return None
 
 
-@with_token_refresh
 async def _move_event_with_client(
     client: GoogleApiClient,
     event_id: str,

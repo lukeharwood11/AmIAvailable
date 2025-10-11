@@ -77,7 +77,7 @@ class RelationshipRequestsService:
                 status_code=409,
                 detail="A relationship request already exists for this email",
             )
-        
+
         # check to see if you're already connected to this user
         # TODO: implement this check
 
@@ -120,7 +120,7 @@ class RelationshipRequestsService:
 
         requests = [self._convert_db_to_model(req) for req in db_requests]
 
-        filters = {"request_type": "sent"}
+        filters: dict[str, str] = {"request_type": "sent"}
         if status:
             filters["status"] = status
 
@@ -138,7 +138,7 @@ class RelationshipRequestsService:
 
         requests = [self._convert_db_to_model(req) for req in db_requests]
 
-        filters = {"request_type": "received"}
+        filters: dict[str, str] = {"request_type": "received"}
         if status:
             filters["status"] = status
 

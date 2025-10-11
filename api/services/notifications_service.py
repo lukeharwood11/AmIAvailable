@@ -4,34 +4,40 @@ from typing import Literal
 from api.databridge.notifications_databridge import (
     NotificationsDatabridge,
     DBNotificationResponse,
-    DBNotificationsListResponse,
 )
 import api.models.v1.notifications as models
 from enum import Enum
+from typing import Any
+
 
 # Types
 class NotificationType(Enum):
     EVENT_REQUEST = "event_request"
     RELATIONSHIP = "relationship"
 
+
 # ============================================================================
 # Notification payloads
 # ============================================================================
+
 
 class User(BaseModel):
     id: str
     name: str | None = None
     email: str
 
+
 class EventRequestNotificationPayload(BaseModel):
     event_request_id: str
     update: Literal["created", "updated", "deleted"] = "created"
     user: User | None = None
 
+
 class RelationshipNotificationPayload(BaseModel):
-    id: str # relationship_request_id or relationship_id
+    id: str  # relationship_request_id or relationship_id
     update: Literal["created", "accepted"] = "created"
     user: User | None = None
+
 
 class NotificationsService:
     def __init__(self, databridge: NotificationsDatabridge):
@@ -53,17 +59,24 @@ class NotificationsService:
             updated_at=db_notification.updated_at,
         )
 
-    async def create_event_request_notification(self, to_user_id: str, payload: EventRequestNotificationPayload) -> models.NotificationCreateResponse:
+    async def create_event_request_notification(
+        self, to_user_id: str, payload: EventRequestNotificationPayload
+    ) -> models.NotificationCreateResponse:
         """Create a new event request notification"""
-        _user_name = f"{payload.user.name} ({payload.user.email})" if payload.user.name else payload.user.email
+        assert payload.user, "payload.user needs to be set"
+        _user_name = (
+            f"{payload.user.name} ({payload.user.email})"
+            if payload.user.name
+            else payload.user.email
+        )
         if payload.update == "created":
-            title = f"New Event Request"
+            title = "New Event Request"
             message = f"{_user_name} has created a new event request."
         elif payload.update == "updated":
-            title = f"Event Request Updated"
+            title = "Event Request Updated"
             message = f"{_user_name} has updated their event request."
         elif payload.update == "deleted":
-            title = f"Event Request Deleted"
+            title = "Event Request Deleted"
             message = f"{_user_name} has deleted their event request."
         else:
             raise ValueError("Invalid update type")
@@ -73,10 +86,17 @@ class NotificationsService:
             message=message,
             payload=payload.model_dump(),
         )
-    
-    async def create_relationship_notification(self, to_user_id: str, payload: RelationshipNotificationPayload) -> models.NotificationCreateResponse:
+
+    async def create_relationship_notification(
+        self, to_user_id: str, payload: RelationshipNotificationPayload
+    ) -> models.NotificationCreateResponse:
         """Create a new relationship notification"""
-        _user_name = f"{payload.user.name} ({payload.user.email})" if payload.user.name else payload.user.email
+        assert payload.user, "payload.user needs to be set"
+        _user_name = (
+            f"{payload.user.name} ({payload.user.email})"
+            if payload.user.name
+            else payload.user.email
+        )
         if payload.update == "created":
             title = f"New Relationship Request"
             message = f"{_user_name} would like to add you as a connection."
@@ -98,7 +118,7 @@ class NotificationsService:
         user_id: str,
         title: str,
         message: str,
-        payload: dict[str, any] | None = None,
+        payload: dict[str, Any] | None = None,
     ) -> models.NotificationCreateResponse:
         """Create a new notification"""
         # Validate input
@@ -117,8 +137,7 @@ class NotificationsService:
 
         if not db_notification:
             raise HTTPException(
-                status_code=500, detail="Failed to create notification"
-            )
+                status_code=500, detail="Failed to create notification")
 
         notification_data = self._convert_db_to_model(db_notification)
         return models.NotificationCreateResponse(notification=notification_data)
@@ -132,7 +151,8 @@ class NotificationsService:
         )
 
         if not db_notification:
-            raise HTTPException(status_code=404, detail="Notification not found")
+            raise HTTPException(
+                status_code=404, detail="Notification not found")
 
         # Check if user has permission to view this notification
         if db_notification.user_id != user_id:
@@ -156,7 +176,8 @@ class NotificationsService:
         """Get notifications for a user with optional filters and pagination"""
         # Validate pagination parameters
         if skip < 0:
-            raise HTTPException(status_code=400, detail="Skip must be non-negative")
+            raise HTTPException(
+                status_code=400, detail="Skip must be non-negative")
         if take < 1 or take > 100:
             raise HTTPException(
                 status_code=400, detail="Take must be between 1 and 100"
@@ -174,7 +195,7 @@ class NotificationsService:
             self._convert_db_to_model(notif) for notif in db_result.notifications
         ]
 
-        filters = {}
+        filters: dict[str, bool] = {}
         if is_read is not None:
             filters["is_read"] = is_read
         if is_deleted is not None:
@@ -204,7 +225,8 @@ class NotificationsService:
         )
 
         if not existing:
-            raise HTTPException(status_code=404, detail="Notification not found")
+            raise HTTPException(
+                status_code=404, detail="Notification not found")
 
         # Check if user has permission to update this notification
         if existing.user_id != user_id:
@@ -222,8 +244,7 @@ class NotificationsService:
 
         if not db_notification:
             raise HTTPException(
-                status_code=500, detail="Failed to update notification"
-            )
+                status_code=500, detail="Failed to update notification")
 
         notification_data = self._convert_db_to_model(db_notification)
         return models.NotificationUpdateResponse(notification=notification_data)
@@ -238,7 +259,8 @@ class NotificationsService:
         )
 
         if not existing:
-            raise HTTPException(status_code=404, detail="Notification not found")
+            raise HTTPException(
+                status_code=404, detail="Notification not found")
 
         # Check if user has permission to delete this notification
         if existing.user_id != user_id:
@@ -254,14 +276,11 @@ class NotificationsService:
 
         if not success:
             raise HTTPException(
-                status_code=500, detail="Failed to delete notification"
-            )
+                status_code=500, detail="Failed to delete notification")
 
         return models.NotificationDeleteResponse()
 
-    async def mark_all_as_read(
-        self, *, user_id: str
-    ) -> models.MarkAllAsReadResponse:
+    async def mark_all_as_read(self, *, user_id: str) -> models.MarkAllAsReadResponse:
         """Mark all notifications as read for a user"""
         updated_count = await self.databridge.mark_all_as_read(user_id=user_id)
         return models.MarkAllAsReadResponse(updated_count=updated_count)

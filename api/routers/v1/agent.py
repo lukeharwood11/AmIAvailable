@@ -10,9 +10,11 @@ from fastapi import Depends
 
 router = APIRouter(prefix="/agent", tags=["Agent"])
 
+
 class ChatMessage(BaseModel):
     role: str
     content: str
+
 
 class ChatWithAmiaRequest(BaseModel):
     messages: list[ChatMessage]
@@ -24,13 +26,24 @@ class ChatWithAmiaRequest(BaseModel):
 async def chat_with_amia(
     request: ChatWithAmiaRequest,
     google_events_service: GoogleEventsService = Depends(get_google_events_service),
-    user: UserContainer = Depends(get_current_user)
+    user: UserContainer = Depends(get_current_user),
 ) -> StreamingResponse:
-    agent = await get_amia_agent(user=user, context=request.context, metadata=request.metadata, google_events_service=google_events_service)
+    agent = await get_amia_agent(
+        user=user,
+        context=request.context or {},
+        metadata=request.metadata or {},
+        google_events_service=google_events_service,
+    )
     _iter = agent.run_stream(task=request.messages[-1].content)
+
     async def streamer():
         async for event in _iter:
-            if isinstance(event, BaseAgentEvent):
+            if hasattr(event, 'type') and hasattr(event, 'content'):
                 if event.type == "ModelClientStreamingChunkEvent":
                     yield event.content
-    return StreamingResponse(streamer(), media_type="text/event-stream", headers={"Cache-Control": "no-cache"})
+
+    return StreamingResponse(
+        streamer(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache"},
+    )

@@ -10,10 +10,10 @@ class EventRequestApprovalUser(BaseModel):
 
     user_id: str = Field(
         description="UUID of the user who needs to approve",
-        example="user-123e4567-e89b-12d3-a456-426614174000",
+        examples=["user-123e4567-e89b-12d3-a456-426614174000"],
     )
     required: bool = Field(
-        False, description="Whether this approval is required", example=True
+        False, description="Whether this approval is required", examples=[True]
     )
 
 
@@ -27,14 +27,14 @@ class CreateEventRequestApprovalRequest(BaseModel):
 
     event_request_id: str = Field(
         description="UUID of the event request",
-        example="req-123e4567-e89b-12d3-a456-426614174000",
+        examples=["req-123e4567-e89b-12d3-a456-426614174000"],
     )
     user_id: str = Field(
         description="UUID of the user who needs to approve",
-        example="user-123e4567-e89b-12d3-a456-426614174000",
+        examples=["user-123e4567-e89b-12d3-a456-426614174000"],
     )
     required: bool = Field(
-        False, description="Whether this approval is required", example=True
+        False, description="Whether this approval is required", examples=[True]
     )
 
 
@@ -43,15 +43,15 @@ class UpdateEventRequestApprovalRequest(BaseModel):
 
     approval_id: str = Field(
         description="UUID of the approval to update",
-        example="approval-123e4567-e89b-12d3-a456-426614174000",
+        examples=["approval-123e4567-e89b-12d3-a456-426614174000"],
     )
     status: Literal["pending", "approved", "rejected"] = Field(
-        description="Approval status", example="approved"
+        description="Approval status", examples=["approved"]
     )
     response_notes: str | None = Field(
         None,
         description="Optional notes from the approver",
-        example="Looks good to me, approved!",
+        examples=["Looks good to me, approved!"],
     )
 
 
@@ -61,18 +61,18 @@ class GetEventRequestApprovalsRequest(BaseModel):
     event_request_id: str | None = Field(
         None,
         description="Filter by event request ID",
-        example="req-123e4567-e89b-12d3-a456-426614174000",
+        examples=["req-123e4567-e89b-12d3-a456-426614174000"],
     )
     user_id: str | None = Field(
         None,
         description="Filter by user ID",
-        example="user-123e4567-e89b-12d3-a456-426614174000",
+        examples=["user-123e4567-e89b-12d3-a456-426614174000"],
     )
     status: Literal["pending", "approved", "rejected"] | None = Field(
-        None, description="Filter by approval status", example="pending"
+        None, description="Filter by approval status", examples=["pending"]
     )
     required: bool | None = Field(
-        None, description="Filter by required approvals", example=True
+        None, description="Filter by required approvals", examples=[True]
     )
 
 
@@ -81,7 +81,7 @@ class DeleteEventRequestApprovalRequest(BaseModel):
 
     approval_id: str = Field(
         description="UUID of the approval to delete",
-        example="approval-123e4567-e89b-12d3-a456-426614174000",
+        examples=["approval-123e4567-e89b-12d3-a456-426614174000"],
     )
 
 

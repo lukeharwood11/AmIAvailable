@@ -94,7 +94,7 @@ class RelationshipMetadataService:
             self._convert_db_to_model(metadata) for metadata in db_metadata_list
         ]
 
-        filters = {}
+        filters: dict[str, str] = {}
         if relationship_id:
             filters["relationship_id"] = relationship_id
         if relationship_type:

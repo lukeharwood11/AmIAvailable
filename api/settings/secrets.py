@@ -21,16 +21,20 @@ class SecretsManager:
         self.secrets_name: str | None = os.getenv("SECRETS_MANAGER_SECRET_NAME")
         self.environment: str = os.getenv("ENVIRONMENT", "local")
         self._secrets_client = client
-        self._secrets_dict = self._get_secrets_dict()
+        self._secrets_dict: dict | None = self._get_secrets_dict()
 
     def _get_secrets_dict(self) -> dict[str, str] | None:
         if self.environment == "prod":
             response = self._secrets_client.get_secret_value(SecretId=self.secrets_name)
-            return json.loads(response["SecretString"])
+            return (
+                json.loads(response["SecretString"]) if response["SecretString"] else {}
+            )
         else:
             return None
 
-    def get_secret(self, *, name: str, default: str | type(...) = ...) -> str:
+    def get_secret(
+        self, *, name: str, default: str | int | None = None
+    ) -> str | int | None:
         """
         Get a secret value based on environment.
 
@@ -46,6 +50,7 @@ class SecretsManager:
             f"Getting secret '{name}' from SECRETS_MANAGER_SECRET_NAME: '{self.secrets_name}' with environment '{self.environment}'"
         )
         if self.environment == "prod":
+            assert self._secrets_dict is not None, "In production settings, "
             return (
                 self._secrets_dict.get(name, default)
                 if default is not ...

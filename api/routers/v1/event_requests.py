@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from datetime import datetime
 
 from ...settings.auth import get_current_user_id, get_current_user
+from ...models.v1.event_requests import EventDateTime
 from ...dependencies import (
     get_event_requests_service,
     get_event_request_approvals_service,
@@ -107,12 +108,21 @@ async def get_user_event_requests(
     Returns:
         List of user's event requests
     """
+    # Convert datetime to EventDateTime
+    start_date_from_event = None
+    if start_date_from:
+        start_date_from_event = EventDateTime(date_time=start_date_from)
+    
+    start_date_to_event = None
+    if start_date_to:
+        start_date_to_event = EventDateTime(date_time=start_date_to)
+
     return await service.get_user_event_requests(
         user_id=user_id,
         status=status,
         importance_level=importance_level,
-        start_date_from=start_date_from,
-        start_date_to=start_date_to,
+        start_date_from=start_date_from_event,
+        start_date_to=start_date_to_event,
     )
 
 
@@ -138,11 +148,20 @@ async def get_all_event_requests(
     Returns:
         List of event requests
     """
+    # Convert datetime to EventDateTime
+    start_date_from_event = None
+    if start_date_from:
+        start_date_from_event = EventDateTime(date_time=start_date_from)
+    
+    start_date_to_event = None
+    if start_date_to:
+        start_date_to_event = EventDateTime(date_time=start_date_to)
+
     return await service.get_all_event_requests(
         status=status,
         importance_level=importance_level,
-        start_date_from=start_date_from,
-        start_date_to=start_date_to,
+        start_date_from=start_date_from_event,
+        start_date_to=start_date_to_event,
         created_by=created_by,
     )
 
@@ -194,7 +213,10 @@ async def get_event_request(
     return await service.get_event_request(event_request_id=event_request_id)
 
 
-@router.get("/{event_request_id}/with-approvers", response_model=EventRequestWithApproversResponse)
+@router.get(
+    "/{event_request_id}/with-approvers",
+    response_model=EventRequestWithApproversResponse,
+)
 async def get_event_request_with_approvers(
     event_request_id: str,
     user_id: str = Depends(get_current_user_id),
@@ -210,7 +232,9 @@ async def get_event_request_with_approvers(
         - Response notes from approvers
         - Timestamps for when approvals were created and responded to
     """
-    return await service.get_event_request_with_approvers(event_request_id=event_request_id)
+    return await service.get_event_request_with_approvers(
+        event_request_id=event_request_id
+    )
 
 
 @router.get("/google/{google_event_id}", response_model=EventRequestResponse)

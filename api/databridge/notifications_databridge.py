@@ -63,9 +63,7 @@ class NotificationsDatabridge:
         """Get a specific notification by ID"""
         try:
             response = (
-                self.notifications.select("*")
-                .eq("id", notification_id)
-                .execute()
+                self.notifications.select("*").eq("id", notification_id).execute()
             )
             if not response.data or len(response.data) == 0:
                 return None
@@ -105,7 +103,9 @@ class NotificationsDatabridge:
             notifications = [DBNotificationResponse(**item) for item in response.data]
 
             # Get total count with same filters
-            count_query = self.notifications.select("id", count="exact").eq("user_id", user_id)
+            count_query = self.notifications.select("id", count="exact").eq(
+                "user_id", user_id
+            )
             if is_read is not None:
                 count_query = count_query.eq("is_read", is_read)
             if is_deleted is not None:
@@ -130,8 +130,10 @@ class NotificationsDatabridge:
     ) -> DBNotificationResponse | None:
         """Update a notification"""
         try:
-            update_data = {"updated_at": datetime.now().isoformat()}
-            
+            update_data: dict[str, str | bool] = {
+                "updated_at": datetime.now().isoformat()
+            }
+
             if is_read is not None:
                 update_data["is_read"] = is_read
             if is_deleted is not None:
@@ -163,7 +165,9 @@ class NotificationsDatabridge:
         """Mark all notifications as read for a user"""
         try:
             response = (
-                self.notifications.update({"is_read": True, "updated_at": datetime.now().isoformat()})
+                self.notifications.update(
+                    {"is_read": True, "updated_at": datetime.now().isoformat()}
+                )
                 .eq("user_id", user_id)
                 .eq("is_read", False)
                 .execute()

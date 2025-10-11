@@ -140,7 +140,7 @@ class EventRequestsService:
             created_at=db_request.created_at,
             updated_at=db_request.updated_at,
             approvers=[
-                self._convert_db_approval_to_model(approver) 
+                self._convert_db_approval_to_model(approver)
                 for approver in db_request.approvers
             ],
         )
@@ -166,7 +166,10 @@ class EventRequestsService:
                 "name": relationship.other_user.full_name,
             } for relationship in _relationships.relationships
         ]}"
-        return await self.llm_service.smart_parse_event_request(request, _context)
+        result = await self.llm_service.smart_parse_event_request(request, _context)
+        if result is None:
+            raise ValueError("Failed to parse event request")
+        return result
 
     async def create_event_request(
         self,
@@ -272,7 +275,7 @@ class EventRequestsService:
 
         requests = [self._convert_db_to_model(req) for req in db_requests]
 
-        filters = {"created_by": user_id}
+        filters: dict[str, str | int | object] = {"created_by": user_id}
         if status:
             filters["status"] = status
         if importance_level:
@@ -312,7 +315,7 @@ class EventRequestsService:
 
         requests = [self._convert_db_to_model(req) for req in db_requests]
 
-        filters = {}
+        filters: dict[str, str | int | object] = {}
         if status:
             filters["status"] = status
         if importance_level:
@@ -515,7 +518,7 @@ class EventRequestsService:
         # Get total count from the first item if available
         total_count = db_requests[0].total_count if db_requests else 0
 
-        filters = {}
+        filters: dict[str, str] = {}
         if status:
             filters["status"] = status
 

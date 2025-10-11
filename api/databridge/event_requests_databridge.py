@@ -211,7 +211,9 @@ class EventRequestsDatabridge:
     ) -> DBEventRequestResponse | None:
         """Update an event request"""
         try:
-            update_data = {"updated_at": datetime.now().isoformat()}
+            update_data: dict[str, str | int | dict] = {
+                "updated_at": datetime.now().isoformat()
+            }
 
             if google_event_id is not None:
                 update_data["google_event_id"] = google_event_id
@@ -315,7 +317,7 @@ class EventRequestsDatabridge:
                 .single()
                 .execute()
             )
-            
+
             if not event_response.data:
                 return None
 
@@ -330,7 +332,7 @@ class EventRequestsDatabridge:
             approvers = []
             if approvals_response.data:
                 approvers = [
-                    DBEventRequestApprovalResponse(**approval) 
+                    DBEventRequestApprovalResponse(**approval)
                     for approval in approvals_response.data
                 ]
 
