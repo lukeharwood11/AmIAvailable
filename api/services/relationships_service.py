@@ -19,7 +19,7 @@ from api.models.v1.relationships import (
 
 
 class RelationshipsService:
-    def __init__(self, databridge: RelationshipsDatabridge):
+    def __init__(self, databridge: RelationshipsDatabridge) -> None:
         self.databridge: RelationshipsDatabridge = databridge
 
     def _convert_db_to_model(

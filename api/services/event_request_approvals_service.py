@@ -16,7 +16,7 @@ import api.models.v1.event_request_approvals as era_models
 
 
 class EventRequestApprovalsService:
-    def __init__(self, databridge: EventRequestApprovalsDatabridge):
+    def __init__(self, databridge: EventRequestApprovalsDatabridge) -> None:
         self.databridge: EventRequestApprovalsDatabridge = databridge
 
     def _convert_db_to_model(

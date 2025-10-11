@@ -17,7 +17,7 @@ class DBRelationshipMetadataResponse(BaseModel):
 
 
 class RelationshipMetadataDatabridge:
-    def __init__(self, supabase: Client):
+    def __init__(self, supabase: Client) -> None:
         self.supabase = supabase
         self.relationship_metadata = self.supabase.table("relationship_metadata")
 

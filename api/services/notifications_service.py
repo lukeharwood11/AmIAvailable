@@ -40,7 +40,7 @@ class RelationshipNotificationPayload(BaseModel):
 
 
 class NotificationsService:
-    def __init__(self, databridge: NotificationsDatabridge):
+    def __init__(self, databridge: NotificationsDatabridge) -> None:
         self.databridge: NotificationsDatabridge = databridge
 
     def _convert_db_to_model(

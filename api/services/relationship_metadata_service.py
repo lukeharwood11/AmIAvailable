@@ -14,7 +14,7 @@ from ..models.v1.relationship_metadata import (
 
 
 class RelationshipMetadataService:
-    def __init__(self, databridge: RelationshipMetadataDatabridge):
+    def __init__(self, databridge: RelationshipMetadataDatabridge) -> None:
         self.databridge = databridge
 
     def _convert_db_to_model(

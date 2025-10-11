@@ -23,7 +23,7 @@ class RelationshipRequestsService:
         self,
         databridge: RelationshipRequestsDatabridge,
         relationships_service: RelationshipsService,
-    ):
+    ) -> None:
         self.databridge: RelationshipRequestsDatabridge = databridge
         self.relationships_service: RelationshipsService = relationships_service
 

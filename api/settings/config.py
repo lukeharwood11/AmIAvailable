@@ -17,7 +17,7 @@ class GoogleConfig(BaseSettings):
         "email profile openid https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/calendar"
     )
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         # Use secrets manager for sensitive Google credentials
         _secret_val: int | str | None = secrets_manager.get_secret(
@@ -37,7 +37,7 @@ class OpenAIConfig(BaseSettings):
 
     api_key: str = Field(default="")
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         # Use secrets manager for OpenAI API key
         _secret_val: int | str | None = secrets_manager.get_secret(
@@ -60,7 +60,7 @@ class SupabaseConfig(BaseSettings):
     anon_key: str = Field(default="")
     service_role_key: str = Field(default="")
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         # Use secrets manager for sensitive Supabase keys
         _anon_key_secret_val: int | str | None = secrets_manager.get_secret(
@@ -93,7 +93,7 @@ class DatabaseConfig(BaseSettings):
     username: str = Field(default="")
     password: str = Field(default="")
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         # Use secrets manager for database credentials
         _user_name_secret_val = secrets_manager.get_secret(

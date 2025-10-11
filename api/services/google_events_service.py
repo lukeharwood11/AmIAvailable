@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 class GoogleEventsService:
     """Service layer for handling calendar events business logic"""
 
-    def __init__(self, user_token_databridge: UserTokenDatabridge):
+    def __init__(self, user_token_databridge: UserTokenDatabridge) -> None:
         self.user_token_databridge = user_token_databridge
 
     async def _get_user_tokens(self, *, user_id: str) -> DBUserTokenResponse:

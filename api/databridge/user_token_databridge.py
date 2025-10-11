@@ -12,7 +12,7 @@ class DBUserTokenResponse(BaseModel):
 
 
 class UserTokenDatabridge:
-    def __init__(self, supabase: Client):
+    def __init__(self, supabase: Client) -> None:
         self.supabase = supabase
         self.user_tokens = self.supabase.table("user_tokens")
 

@@ -32,7 +32,7 @@ class DBRelationshipsListResponse(BaseModel):
 
 
 class RelationshipsDatabridge:
-    def __init__(self, supabase: Client):
+    def __init__(self, supabase: Client) -> None:
         self.supabase = supabase
         self.relationships = self.supabase.table("relationships")
 

@@ -11,6 +11,7 @@ from api.routers.v1 import (
     notifications,
     diagnostics,
     agent,
+    ai_usage,
 )
 
 protected_router = APIRouter(
@@ -25,6 +26,7 @@ protected_router.include_router(event_requests.router)
 protected_router.include_router(emails.router)
 protected_router.include_router(notifications.router)
 protected_router.include_router(agent.router)
+protected_router.include_router(ai_usage.router)
 unprotected_router = APIRouter()
 unprotected_router.include_router(diagnostics.router)
 

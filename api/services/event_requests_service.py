@@ -33,7 +33,7 @@ class EventRequestsService:
         databridge: EventRequestsDatabridge,
         llm_service: LLMService,
         relationships_service: RelationshipsService,
-    ):
+    ) -> None:
         self.databridge: EventRequestsDatabridge = databridge
         self.relationships_service: RelationshipsService = relationships_service
         self.llm_service: LLMService = llm_service

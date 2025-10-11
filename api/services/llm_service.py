@@ -32,10 +32,10 @@ class LLMService:
         },
     }
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.openai_client: openai.AsyncOpenAI = openai_client
 
-    def _calculate_cost(self, response: ChatCompletion):
+    def _calculate_cost(self, response: ChatCompletion) -> LLMCosts:
         _model = response.model
         if response.usage is None:
             return LLMCosts(input_cost=0.0, output_cost=0.0, total_cost=0.0)

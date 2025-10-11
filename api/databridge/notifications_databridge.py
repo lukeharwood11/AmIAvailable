@@ -26,7 +26,7 @@ class DBNotificationsListResponse(BaseModel):
 
 
 class NotificationsDatabridge:
-    def __init__(self, supabase: Client):
+    def __init__(self, supabase: Client) -> None:
         self.supabase = supabase
         self.notifications = self.supabase.table("notifications")
 

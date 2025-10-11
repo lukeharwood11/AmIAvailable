@@ -17,7 +17,7 @@ client = boto3.client("secretsmanager")
 class SecretsManager:
     """Handles secret retrieval based on environment."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.secrets_name: str | None = os.getenv("SECRETS_MANAGER_SECRET_NAME")
         self.environment: str = os.getenv("ENVIRONMENT", "local")
         self._secrets_client = client

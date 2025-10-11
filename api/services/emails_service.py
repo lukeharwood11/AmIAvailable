@@ -248,7 +248,7 @@ def create_email_template(subject: str, body: str) -> str:
 
 
 class EmailsService:
-    def __init__(self):
+    def __init__(self) -> None:
         self.ses_client = boto3.client("ses", region_name="us-east-2")
         self.source_email = "amia@amiavailable.com"
         self.source_name = "AM/A"

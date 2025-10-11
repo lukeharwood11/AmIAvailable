@@ -73,7 +73,7 @@ T = TypeVar("T")
 class GoogleTokens:
     """Container for Google OAuth tokens"""
 
-    def __init__(self, access_token: str, refresh_token: str | None = None):
+    def __init__(self, access_token: str, refresh_token: str | None = None) -> None:
         self.access_token = access_token
         self.refresh_token = refresh_token
 
@@ -90,7 +90,7 @@ class GoogleApiClient:
     Wrapper around Google API client with automatic token refresh functionality
     """
 
-    def __init__(self, tokens: GoogleTokens):
+    def __init__(self, tokens: GoogleTokens) -> None:
         self.tokens = tokens
         self._credentials: Credentials | None = None
 

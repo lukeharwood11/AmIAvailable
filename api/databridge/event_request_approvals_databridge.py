@@ -18,7 +18,7 @@ class DBEventRequestApprovalResponse(BaseModel):
 
 
 class EventRequestApprovalsDatabridge:
-    def __init__(self, supabase: Client):
+    def __init__(self, supabase: Client) -> None:
         self.supabase = supabase
         self.event_request_approvals = self.supabase.table("event_request_approvals")
 

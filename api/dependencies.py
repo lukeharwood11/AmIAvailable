@@ -19,6 +19,7 @@ from .databridge.event_request_approvals_databridge import (
 )
 from .databridge.user_token_databridge import UserTokenDatabridge
 from .databridge.notifications_databridge import NotificationsDatabridge
+from .databridge.ai_usage_databridge import AiUsageDatabridge
 
 # Import all services
 from .services.relationships_service import RelationshipsService
@@ -30,6 +31,7 @@ from .services.google_events_service import GoogleEventsService
 from .services.emails_service import EmailsService
 from .services.llm_service import LLMService
 from .services.notifications_service import NotificationsService
+from .services.ai_usage_service import AiUsageService
 
 
 # Databridge Dependencies
@@ -136,6 +138,13 @@ def get_notifications_databridge(
     return NotificationsDatabridge(supabase=supabase)
 
 
+def get_ai_usage_databridge(
+    supabase: Client = Depends(get_supabase_admin_client),
+) -> AiUsageDatabridge:
+    """Dependency to get AI usage databridge instance"""
+    return AiUsageDatabridge(supabase=supabase)
+
+
 def get_notifications_service(
     databridge: NotificationsDatabridge = Depends(get_notifications_databridge),
 ) -> NotificationsService:
@@ -162,3 +171,10 @@ def get_google_events_service(
 def get_emails_service() -> EmailsService:
     """Dependency to get emails service instance"""
     return EmailsService()
+
+
+def get_ai_usage_service(
+    databridge: AiUsageDatabridge = Depends(get_ai_usage_databridge),
+) -> AiUsageService:
+    """Dependency to get AI usage service instance"""
+    return AiUsageService(databridge=databridge)
