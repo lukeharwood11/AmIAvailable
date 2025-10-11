@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from datetime import datetime
 
-from ...settings.auth import get_current_user_id
-from ...dependencies import get_ai_usage_service
-from ...services.ai_usage_service import AiUsageService
-from ...models.v1.ai_usage import (
+from api.settings.auth import get_current_user_id
+from api.dependencies import get_ai_usage_service
+from api.services.ai_usage_service import AiUsageService
+from api.models.v1.ai_usage import (
     AiUsageResponse,
     AiUsageListResponse,
+    AiUsageCostResponse,
 )
 
 
@@ -32,6 +33,35 @@ async def get_user_ai_usage(
         user_id=user_id,
         skip=skip,
         take=take,
+    )
+
+@router.get("/cost")
+async def get_user_ai_cost(
+    start_date: datetime = Query(
+        ..., description="Start date for the range (ISO format)", alias="startDate"
+    ),
+    end_date: datetime = Query(
+        ..., description="End date for the range (ISO format)", alias="endDate"
+    ),
+    user_id: str = Depends(get_current_user_id),
+    service: AiUsageService = Depends(get_ai_usage_service),
+) -> AiUsageCostResponse:
+    """
+    Get AI usage cost for the current user within a date range
+
+    Returns:
+        AI usage cost for the current user within a date range
+    """
+    _cost = await service.get_user_cost_by_date_range(
+        user_id=user_id,
+        start_date=start_date,
+        end_date=end_date,
+    )
+
+    return AiUsageCostResponse(
+        start_date=start_date,
+        end_date=end_date,
+        cost=_cost,
     )
 
 

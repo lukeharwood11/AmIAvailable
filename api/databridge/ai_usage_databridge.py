@@ -73,6 +73,27 @@ class AiUsageDatabridge:
         except Exception as e:
             logger.info(f"Error fetching AI usage by ID: {e}")
             return None
+    
+    async def get_user_cost_by_date_range(
+        self,
+        *,
+        user_id: str,
+        start_date: datetime,
+        end_date: datetime,
+    ) -> float | None:
+        try:
+            response = (
+                self.ai_usage.select("cost.sum()")
+                .eq("user_id", user_id)
+                .gte("created_at", start_date.isoformat())
+                .lte("created_at", end_date.isoformat())
+                .single()
+                .execute()
+            )
+            return response.data["sum"]
+        except Exception as e:
+            logger.info(f"Error fetching user cost by date range: {e}")
+            return None
 
     async def get_user_ai_usage(
         self, *, user_id: str, skip: int = 0, take: int = 10

@@ -9,7 +9,11 @@ from api.models.v1.ai_usage import (
     AiUsageResponse,
     AiUsageListResponse,
 )
+from api.models.v1.ai_usage import Usage
 from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class AiUsageService:
@@ -27,6 +31,47 @@ class AiUsageService:
             created_at=db_ai_usage.created_at,
             updated_at=db_ai_usage.updated_at,
         )
+    
+    async def get_user_cost_by_date_range(
+        self,
+        *,
+        user_id: str,
+        start_date: datetime,
+        end_date: datetime,
+    ) -> float:
+        """Get user cost by date range
+        Raises:
+            HTTPException: If failed to get user cost
+        """
+        _cost = await self.databridge.get_user_cost_by_date_range(
+            user_id=user_id, start_date=start_date, end_date=end_date
+        )
+        if _cost is None:
+            raise HTTPException(status_code=500, detail="Failed to get user cost")
+        
+        return _cost
+    
+    async def create_ai_usage_entries(
+        self,
+        *,
+        user_id: str,
+        usages: list[Usage],
+    ) -> list[AiUsageData]:
+        """Create AI usage entries"""
+        _usages: list[AiUsageData]= []
+        for usage in usages:
+            _usage = {
+                "prompt_tokens": usage.prompt_tokens,
+                "completion_tokens": usage.completion_tokens,
+            }
+            _ai_usage = await self.create_ai_usage_entry(
+                user_id=user_id, cost=usage.cost, usage=_usage, metadata=usage.metadata
+            )
+            if _ai_usage is None:
+                logger.error(f"Failed to create AI usage entry for user {user_id} with cost {usage.cost}")
+                continue
+            _usages.append(_ai_usage)
+        return _usages
 
     async def create_ai_usage_entry(
         self,

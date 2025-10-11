@@ -60,6 +60,14 @@ export const ERROR_MESSAGES = {
         CHAT_FAILED: 'Failed to chat with Amia. Please try again.',
         STREAMING_FAILED: 'Failed to stream response from Amia.',
     },
+    AI_USAGE: {
+        FETCH_FAILED: 'Failed to fetch AI usage data.',
+        FETCH_COST_FAILED: 'Failed to fetch AI usage cost data.',
+        REFRESH_FAILED: 'Failed to refresh AI usage data.',
+    },
+    GENERAL: {
+        REQUEST_FAILED: 'Request failed. Please try again.',
+    },
     NETWORK: {
         CONNECTION_ERROR:
             'Network connection error. Please check your internet connection.',

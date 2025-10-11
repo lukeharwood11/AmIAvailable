@@ -11,6 +11,7 @@ import { SidebarAction } from '../../components/CollapsibleSidebar';
 import { ChatHistoryItem } from './components/ChatHistory';
 import { MdAdd } from 'react-icons/md';
 import { useMediaQuery } from 'react-responsive';
+import { useReduxAiUsage } from '../../hooks/useReduxAiUsage';
 
 interface Message {
   id: string;
@@ -63,6 +64,26 @@ const ChatPage: React.FC = () => {
     clearError,
   } = useReduxAgent();
 
+  const { loadAiUsageCost, costData } = useReduxAiUsage();
+
+  const fetchCostData = async () => {
+    const date = new Date();
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    // passing in zero for the day will pull the last day of the month
+    const lastDayOfMonth = new Date(year, month, 0).getDate();
+    const startDate = new Date(year, month, 1);
+    const endDate = new Date(year, month, lastDayOfMonth);
+    await loadAiUsageCost({
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString()
+    })
+  }
+
+  useEffect(() => {
+    fetchCostData();
+  }, [])
+
   useEffect(() => {
     const message = searchParams.get('message');
     if (message && !hasProcessedInitialMessage.current) {
@@ -106,6 +127,7 @@ const ChatPage: React.FC = () => {
         };
 
         await chatWithAmia(input.trim(), metadata, context);
+        await fetchCostData();
         window.scrollTo(0, 0);
       } catch (err) {
         console.error('Failed to send message:', err);
@@ -160,6 +182,16 @@ const ChatPage: React.FC = () => {
         onToggle={toggleSidebar}
         actions={sidebarActions}
       >
+        <Text variant='body-small' weight='medium' color='grey-600'>
+          Luke's Money Spent in {new Date().toLocaleDateString('en-US', {
+            month: 'long',
+            timeZone:
+              Intl.DateTimeFormat().resolvedOptions().timeZone,
+          })}
+        </Text>
+        <Text variant="caption">
+          ${costData?.cost.toFixed(3) || '$-.--'}
+        </Text>
         <ChatHistory
           history={chatHistory}
           onSelectHistory={handleSelectHistory}

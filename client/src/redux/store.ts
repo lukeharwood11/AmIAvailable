@@ -5,6 +5,7 @@ import {
     eventRequestsReducer,
     notificationsReducer,
     agentReducer,
+    aiUsageReducer,
 } from './slices';
 import calendarSlice from './slices/calendar.slice';
 
@@ -16,6 +17,7 @@ export const store = configureStore({
         eventRequests: eventRequestsReducer,
         notifications: notificationsReducer,
         agent: agentReducer,
+        aiUsage: aiUsageReducer,
     },
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware({

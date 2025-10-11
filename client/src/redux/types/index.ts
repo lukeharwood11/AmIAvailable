@@ -6,3 +6,4 @@ export * from './relationships.types';
 export * from './relationship-requests.types';
 export * from './event-requests.types';
 export * from './agent.types';
+export * from './ai-usage.types';

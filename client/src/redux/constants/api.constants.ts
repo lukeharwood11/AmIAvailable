@@ -15,6 +15,10 @@ export const API_ENDPOINTS = {
 
     // Agent endpoints
     AGENT_CHAT: '/api/v1/agent/commands/chat',
+
+    // AI Usage endpoints
+    AI_USAGE: '/api/v1/ai-usage',
+    AI_USAGE_COST: '/api/v1/ai-usage/cost',
 } as const;
 
 // HTTP Methods

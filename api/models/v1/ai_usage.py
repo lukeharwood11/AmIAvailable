@@ -2,6 +2,16 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Dict, Any
 
+# ============================================================================
+# Internal Models
+# ============================================================================
+
+class Usage(BaseModel):
+    prompt_tokens: int
+    completion_tokens: int
+    model: str
+    cost: float
+    metadata: dict
 
 # ============================================================================
 # REQUEST MODELS
@@ -52,3 +62,9 @@ class AiUsageListResponse(BaseModel):
     total_count: int
     skip: int
     take: int
+
+class AiUsageCostResponse(BaseModel):
+    """Response model for AI usage cost"""
+    start_date: datetime = Field(description="Start date for the range (ISO format)")
+    end_date: datetime = Field(description="End date for the range (ISO format)")
+    cost: float = Field(description="Cost of the AI usage")

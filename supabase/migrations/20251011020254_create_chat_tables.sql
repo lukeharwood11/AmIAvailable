@@ -31,3 +31,6 @@ CREATE POLICY "Users can update own ai usage" ON public.ai_usage
 -- Also create a policy for DELETE if needed
 CREATE POLICY "Users can delete own ai usage" ON public.ai_usage
   FOR DELETE USING (auth.uid() = user_id);
+
+ALTER ROLE authenticator SET pgrst.db_aggregates_enabled = 'true';
+NOTIFY pgrst, 'reload config';
