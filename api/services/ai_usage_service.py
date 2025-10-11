@@ -16,9 +16,7 @@ class AiUsageService:
     def __init__(self, databridge: AiUsageDatabridge) -> None:
         self.databridge: AiUsageDatabridge = databridge
 
-    def _convert_db_to_model(
-        self, db_ai_usage: DBAiUsageResponse
-    ) -> AiUsageData:
+    def _convert_db_to_model(self, db_ai_usage: DBAiUsageResponse) -> AiUsageData:
         """Convert database response to API model"""
         return AiUsageData(
             id=db_ai_usage.id,
@@ -64,11 +62,21 @@ class AiUsageService:
         )
 
     async def get_user_ai_usage_by_date_range(
-        self, *, user_id: str, start_date: datetime, end_date: datetime, skip: int = 0, take: int = 10
+        self,
+        *,
+        user_id: str,
+        start_date: datetime,
+        end_date: datetime,
+        skip: int = 0,
+        take: int = 10,
     ) -> AiUsageListResponse:
         """Get AI usage records for a user within a date range with pagination"""
         db_result = await self.databridge.get_user_ai_usage_by_date_range(
-            user_id=user_id, start_date=start_date, end_date=end_date, skip=skip, take=take
+            user_id=user_id,
+            start_date=start_date,
+            end_date=end_date,
+            skip=skip,
+            take=take,
         )
 
         ai_usage_records = [

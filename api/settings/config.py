@@ -45,9 +45,7 @@ class OpenAIConfig(BaseSettings):
         )
 
         if not isinstance(_secret_val, str):
-            logger.warn(
-                f"OPENAI__API_KEY returned non-string value {_secret_val}"
-            )
+            logger.warn(f"OPENAI__API_KEY returned non-string value {_secret_val}")
             _secret_val = str(_secret_val)
 
         self.api_key = _secret_val

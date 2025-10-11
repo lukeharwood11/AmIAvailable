@@ -136,8 +136,7 @@ class NotificationsService:
         )
 
         if not db_notification:
-            raise HTTPException(
-                status_code=500, detail="Failed to create notification")
+            raise HTTPException(status_code=500, detail="Failed to create notification")
 
         notification_data = self._convert_db_to_model(db_notification)
         return models.NotificationCreateResponse(notification=notification_data)
@@ -151,8 +150,7 @@ class NotificationsService:
         )
 
         if not db_notification:
-            raise HTTPException(
-                status_code=404, detail="Notification not found")
+            raise HTTPException(status_code=404, detail="Notification not found")
 
         # Check if user has permission to view this notification
         if db_notification.user_id != user_id:
@@ -176,8 +174,7 @@ class NotificationsService:
         """Get notifications for a user with optional filters and pagination"""
         # Validate pagination parameters
         if skip < 0:
-            raise HTTPException(
-                status_code=400, detail="Skip must be non-negative")
+            raise HTTPException(status_code=400, detail="Skip must be non-negative")
         if take < 1 or take > 100:
             raise HTTPException(
                 status_code=400, detail="Take must be between 1 and 100"
@@ -225,8 +222,7 @@ class NotificationsService:
         )
 
         if not existing:
-            raise HTTPException(
-                status_code=404, detail="Notification not found")
+            raise HTTPException(status_code=404, detail="Notification not found")
 
         # Check if user has permission to update this notification
         if existing.user_id != user_id:
@@ -243,8 +239,7 @@ class NotificationsService:
         )
 
         if not db_notification:
-            raise HTTPException(
-                status_code=500, detail="Failed to update notification")
+            raise HTTPException(status_code=500, detail="Failed to update notification")
 
         notification_data = self._convert_db_to_model(db_notification)
         return models.NotificationUpdateResponse(notification=notification_data)
@@ -259,8 +254,7 @@ class NotificationsService:
         )
 
         if not existing:
-            raise HTTPException(
-                status_code=404, detail="Notification not found")
+            raise HTTPException(status_code=404, detail="Notification not found")
 
         # Check if user has permission to delete this notification
         if existing.user_id != user_id:
@@ -275,8 +269,7 @@ class NotificationsService:
         )
 
         if not success:
-            raise HTTPException(
-                status_code=500, detail="Failed to delete notification")
+            raise HTTPException(status_code=500, detail="Failed to delete notification")
 
         return models.NotificationDeleteResponse()
 

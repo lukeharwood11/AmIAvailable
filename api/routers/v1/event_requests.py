@@ -112,7 +112,7 @@ async def get_user_event_requests(
     start_date_from_event = None
     if start_date_from:
         start_date_from_event = EventDateTime(date_time=start_date_from)
-    
+
     start_date_to_event = None
     if start_date_to:
         start_date_to_event = EventDateTime(date_time=start_date_to)
@@ -152,7 +152,7 @@ async def get_all_event_requests(
     start_date_from_event = None
     if start_date_from:
         start_date_from_event = EventDateTime(date_time=start_date_from)
-    
+
     start_date_to_event = None
     if start_date_to:
         start_date_to_event = EventDateTime(date_time=start_date_to)

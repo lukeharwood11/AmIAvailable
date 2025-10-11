@@ -82,7 +82,13 @@ class AiUsageDatabridge:
             return DBAiUsageListResponse(ai_usage_records=[], total_count=0)
 
     async def get_user_ai_usage_by_date_range(
-        self, *, user_id: str, start_date: datetime, end_date: datetime, skip: int = 0, take: int = 10
+        self,
+        *,
+        user_id: str,
+        start_date: datetime,
+        end_date: datetime,
+        skip: int = 0,
+        take: int = 10,
     ) -> DBAiUsageListResponse:
         """Get AI usage records for a user within a date range with pagination"""
         try:

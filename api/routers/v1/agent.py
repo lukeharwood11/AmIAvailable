@@ -38,7 +38,7 @@ async def chat_with_amia(
 
     async def streamer():
         async for event in _iter:
-            if hasattr(event, 'type') and hasattr(event, 'content'):
+            if hasattr(event, "type") and hasattr(event, "content"):
                 if event.type == "ModelClientStreamingChunkEvent":
                     yield event.content
 

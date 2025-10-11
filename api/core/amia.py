@@ -27,6 +27,7 @@ model_client = OpenAIChatCompletionClient(
     ),
 )
 
+
 def build_system_prompt(context_string: str) -> str:
     return f"""
 You are a calendar assistant that can help with scheduling events. Your name is AMIA (stands for Am I Available?).
@@ -46,14 +47,12 @@ async def get_amia_agent(
     user: UserContainer,
     context: dict,
     metadata: dict,
-    google_events_service: GoogleEventsService = Depends(
-        get_google_events_service),
+    google_events_service: GoogleEventsService = Depends(get_google_events_service),
 ) -> AssistantAgent:
     """Gets the current week events for the current user."""
     tools = [
         calendar.get_current_week_events_wrapper(
-            user_id=user["user_id"],
-            google_events_service=google_events_service
+            user_id=user["user_id"], google_events_service=google_events_service
         )
     ]
     context_string = f"{"\n".join([f"{key.replace('_', ' ').title()}: {value}" for key, value in context.items()])}"
@@ -61,7 +60,7 @@ async def get_amia_agent(
     agent = AssistantAgent(
         name="amia_agent",
         model_client=model_client,
-        tools=tools, # pyrefly: ignore
+        tools=tools,  # pyrefly: ignore
         system_message=build_system_prompt(context_string),
         reflect_on_tool_use=True,
         # Enable streaming tokens from the model client.

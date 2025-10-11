@@ -39,7 +39,7 @@ class LLMService:
         _model = response.model
         if response.usage is None:
             return LLMCosts(input_cost=0.0, output_cost=0.0, total_cost=0.0)
-        
+
         _input_tokens = response.usage.prompt_tokens
         _output_tokens = response.usage.completion_tokens
         _input_cost = _input_tokens / 1000000 * self.MODEL_COSTS[_model]["input"]
@@ -83,10 +83,22 @@ Do not add ANY information that isn't in the request. If the user doesn't specif
         _object = response.choices[0].message.parsed
 
         # ensure that the start/end date isn't timezone aware
-        if _object and hasattr(_object, 'start_date') and _object.start_date and hasattr(_object.start_date, 'date_time') and _object.start_date.date_time:
+        if (
+            _object
+            and hasattr(_object, "start_date")
+            and _object.start_date
+            and hasattr(_object.start_date, "date_time")
+            and _object.start_date.date_time
+        ):
             _object.start_date.date_time = _object.start_date.date_time.replace(
                 tzinfo=None
             )
-        if _object and hasattr(_object, 'end_date') and _object.end_date and hasattr(_object.end_date, 'date_time') and _object.end_date.date_time:
+        if (
+            _object
+            and hasattr(_object, "end_date")
+            and _object.end_date
+            and hasattr(_object.end_date, "date_time")
+            and _object.end_date.date_time
+        ):
             _object.end_date.date_time = _object.end_date.date_time.replace(tzinfo=None)
         return _object
