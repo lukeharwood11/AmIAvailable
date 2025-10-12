@@ -71,3 +71,14 @@ export const getAiUsageCost = async (
     params: { startDate, endDate },
   });
 };
+
+export const getAiUsageByDateRange = async (
+  request: GetAiUsageRequest & GetAiUsageCostRequest
+): Promise<AiUsageListResponse> => {
+  const { skip = 0, take = 10, startDate, endDate } = request;
+
+  return makeAuthenticatedRequest<AiUsageListResponse>('/api/v1/ai-usage/by-date-range', {
+    method: HTTP_METHODS.GET,
+    params: { startDate, endDate, skip, take },
+  });
+};

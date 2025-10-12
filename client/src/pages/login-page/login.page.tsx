@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import Button from '../../components/button/Button';
-import { ErrorMessage } from '../../components/error-message';
+import { Note } from '../../components/note';
 import { GoogleIcon, Logo } from '../../components/icons';
 import styles from './login.page.module.css';
 
@@ -38,7 +38,7 @@ const LoginPage = () => {
                     <Logo size={50} />
                     <h1>Welcome!</h1>
                 </div>
-                {error && <ErrorMessage>{error}</ErrorMessage>}
+                {error && <Note variant="error">{error}</Note>}
 
                 <Button
                     onClick={handleGoogleLogin}

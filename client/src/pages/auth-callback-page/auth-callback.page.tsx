@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { storeAccessTokens } from '../../api/auth.api';
 import LoadingIcon from '../../components/icons/LoadingIcon';
-import { ErrorMessage } from '../../components/error-message';
+import { Note } from '../../components/note';
 import styles from './auth-callback.page.module.css';
 
 const AuthCallbackPage: React.FC = () => {
@@ -86,7 +86,7 @@ const AuthCallbackPage: React.FC = () => {
         return (
             <div className={styles.container}>
                 <div className={styles.errorBox}>
-                    <ErrorMessage>{error}</ErrorMessage>
+                    <Note variant="error">{error}</Note>
                     <button
                         onClick={() => navigate('/login')}
                         className={styles.backButton}

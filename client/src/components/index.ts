@@ -30,8 +30,8 @@ export * from './card';
 // Icon components
 export * from './icons';
 
-// Error message components
-export { default as ErrorMessage } from './error-message/ErrorMessage';
+// Note components
+export { default as Note } from './note/Note';
 
 // Layout components
 export { default as Layout } from './layout/Layout';

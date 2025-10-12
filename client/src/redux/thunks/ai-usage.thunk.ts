@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getAiUsage, getAiUsageCost } from '../hubs/ai-usage.hub';
+import { getAiUsage, getAiUsageCost, getAiUsageByDateRange } from '../hubs/ai-usage.hub';
 import { aiUsageActions } from '../slices/ai-usage.slice';
 import { GetAiUsageRequest, GetAiUsageCostRequest } from '../types/ai-usage.types';
 import { ERROR_MESSAGES } from '../constants';
@@ -46,6 +46,37 @@ export const fetchAiUsageCost = createAsyncThunk(
             const response = await getAiUsageCost(request);
             
             dispatch(aiUsageActions.setCostData(response));
+
+            return response;
+        } catch (error) {
+            const message = error instanceof Error 
+                ? error.message 
+                : ERROR_MESSAGES.GENERAL.REQUEST_FAILED;
+            
+            dispatch(aiUsageActions.setError(message));
+            return rejectWithValue(message);
+        } finally {
+            dispatch(aiUsageActions.setLoading(false));
+        }
+    }
+);
+
+// Get AI usage records by date range
+export const fetchAiUsageByDateRange = createAsyncThunk(
+    'aiUsage/fetchAiUsageByDateRange',
+    async (request: GetAiUsageRequest & GetAiUsageCostRequest, { dispatch, rejectWithValue }) => {
+        try {
+            dispatch(aiUsageActions.setLoading(true));
+            dispatch(aiUsageActions.clearError());
+
+            const response = await getAiUsageByDateRange(request);
+            
+            dispatch(aiUsageActions.setRecords({
+                records: response.ai_usage_records,
+                totalCount: response.total_count,
+                skip: response.skip,
+                take: response.take,
+            }));
 
             return response;
         } catch (error) {

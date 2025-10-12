@@ -65,27 +65,14 @@ async def get_user_ai_cost(
     )
 
 
-@router.get("/{ai_usage_id}", response_model=AiUsageResponse)
-async def get_ai_usage_by_id(
-    ai_usage_id: str,
-    user_id: str = Depends(get_current_user_id),
-    service: AiUsageService = Depends(get_ai_usage_service),
-) -> AiUsageResponse:
-    """
-    Get a specific AI usage record by ID for the current user
-
-    Returns:
-        AI usage record data
-    """
-    return await service.get_ai_usage_by_id(ai_usage_id=ai_usage_id, user_id=user_id)
-
-
 @router.get("/by-date-range", response_model=AiUsageListResponse)
 async def get_user_ai_usage_by_date_range(
     start_date: datetime = Query(
-        ..., description="Start date for the range (ISO format)"
+        ..., description="Start date for the range (ISO format)", alias="startDate"
     ),
-    end_date: datetime = Query(..., description="End date for the range (ISO format)"),
+    end_date: datetime = Query(
+        ..., description="End date for the range (ISO format)", alias="endDate"
+    ),
     skip: int = Query(0, ge=0, description="Number of records to skip for pagination"),
     take: int = Query(
         10, ge=1, le=100, description="Number of records to take (max 100)"
@@ -111,3 +98,18 @@ async def get_user_ai_usage_by_date_range(
         skip=skip,
         take=take,
     )
+
+
+@router.get("/{ai_usage_id}", response_model=AiUsageResponse)
+async def get_ai_usage_by_id(
+    ai_usage_id: str,
+    user_id: str = Depends(get_current_user_id),
+    service: AiUsageService = Depends(get_ai_usage_service),
+) -> AiUsageResponse:
+    """
+    Get a specific AI usage record by ID for the current user
+
+    Returns:
+        AI usage record data
+    """
+    return await service.get_ai_usage_by_id(ai_usage_id=ai_usage_id, user_id=user_id)

@@ -10,6 +10,7 @@ from api.services.google_events_service import GoogleEventsService
 from api.services.ai_usage_service import AiUsageService
 from api.dependencies import get_google_events_service, get_ai_usage_service
 from fastapi import Depends
+import json
 
 router = APIRouter(prefix="/agent", tags=["Agent"])
 
@@ -58,6 +59,10 @@ async def chat_with_amia(
                     user_id=user["user_id"],
                     usages=usages,
                 )
+                state = await manager.agent_map[manager.entrypoint].save_state()
+
+                print(json.dumps(state, indent=4))
+    
 
     return StreamingResponse(
         streamer(),

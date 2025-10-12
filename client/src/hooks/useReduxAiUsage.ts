@@ -2,9 +2,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
 import { AppDispatch } from '../redux/store';
 import {
-  fetchAiUsage,
-  fetchAiUsageCost,
-  refreshAiUsage,
+    fetchAiUsage,
+    fetchAiUsageCost,
+    fetchAiUsageByDateRange,
+    refreshAiUsage,
 } from '../redux/thunks/ai-usage.thunk';
 import {
   selectAiUsageRecords,
@@ -47,12 +48,19 @@ export const useReduxAiUsage = () => {
     [dispatch]
   );
 
-  const loadAiUsageCost = useCallback(
-    (request: GetAiUsageCostRequest) => {
-      return dispatch(fetchAiUsageCost(request));
-    },
-    [dispatch]
-  );
+    const loadAiUsageCost = useCallback(
+        (request: GetAiUsageCostRequest) => {
+            return dispatch(fetchAiUsageCost(request));
+        },
+        [dispatch]
+    );
+
+    const loadAiUsageByDateRange = useCallback(
+        (request: GetAiUsageRequest & GetAiUsageCostRequest) => {
+            return dispatch(fetchAiUsageByDateRange(request));
+        },
+        [dispatch]
+    );
 
   const refresh = useCallback(() => {
     return dispatch(refreshAiUsage());
@@ -73,9 +81,10 @@ export const useReduxAiUsage = () => {
     totalCost,
     costInRange,
 
-    // Actions
-    loadAiUsage,
-    loadAiUsageCost,
-    refresh,
+        // Actions
+        loadAiUsage,
+        loadAiUsageCost,
+        loadAiUsageByDateRange,
+        refresh,
   };
 };

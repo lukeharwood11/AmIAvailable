@@ -90,7 +90,7 @@ class AiUsageDatabridge:
                 .single()
                 .execute()
             )
-            return response.data["sum"]
+            return response.data["sum"] or 0.00
         except Exception as e:
             logger.info(f"Error fetching user cost by date range: {e}")
             return None

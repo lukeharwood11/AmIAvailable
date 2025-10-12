@@ -18,6 +18,24 @@
     --danger-light: #ffebeb;
     --danger-accent: #ffd8d8;
 
+    /* success colors */
+    --success-green: #51cf66;
+    --success-dark: #37b24d;
+    --success-light: #ebfbee;
+    --success-accent: #d3f9d8;
+
+    /* warning colors */
+    --warning-yellow: #fcc419;
+    --warning-dark: #fab005;
+    --warning-light: #fff9db;
+    --warning-accent: #fff3bf;
+
+    /* info colors */
+    --info-blue: #339af0;
+    --info-dark: #1c7ed6;
+    --info-light: #e7f5ff;
+    --info-accent: #d0ebff;
+
     /* grey colors */
     --grey-100: #f5f5f5;
     --grey-200: #e5e5e5;
