@@ -70,7 +70,7 @@ resource "aws_lambda_function" "api" {
   package_type  = "Image"
   timeout       = 30  # 30 seconds timeout
   memory_size   = 512 # 512 MB memory
-  publish       = true  # Required for provisioned concurrency
+  # publish       = true  # Required for provisioned concurrency
 
   environment {
     variables = {
@@ -83,16 +83,16 @@ resource "aws_lambda_function" "api" {
   }
 }
 
-# create an alias for the lambda function
-resource "aws_lambda_alias" "api" {
-  name             = "latest"
-  function_name    = aws_lambda_function.api.function_name
-  function_version = aws_lambda_function.api.version
-}
+# # create an alias for the lambda function
+# resource "aws_lambda_alias" "api" {
+#   name             = "latest"
+#   function_name    = aws_lambda_function.api.function_name
+#   function_version = aws_lambda_function.api.version
+# }
 
-# create a provisioned concurrency configuration for the lambda function
-resource "aws_lambda_provisioned_concurrency_config" "api" {
-  function_name    = aws_lambda_function.api.function_name
-  provisioned_concurrent_executions = 1
-  qualifier = aws_lambda_alias.api.name
-}
+# # create a provisioned concurrency configuration for the lambda function
+# resource "aws_lambda_provisioned_concurrency_config" "api" {
+#   function_name    = aws_lambda_function.api.function_name
+#   provisioned_concurrent_executions = 1
+#   qualifier = aws_lambda_alias.api.name
+# }
