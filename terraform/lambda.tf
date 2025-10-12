@@ -70,6 +70,7 @@ resource "aws_lambda_function" "api" {
   package_type  = "Image"
   timeout       = 30  # 30 seconds timeout
   memory_size   = 512 # 512 MB memory
+  publish       = true  # Required for provisioned concurrency
 
   environment {
     variables = {
