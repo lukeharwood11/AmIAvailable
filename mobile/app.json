@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "AMIA Mobile",
+    "slug": "am-i-available-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#4a90e2"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.amia.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#4a90e2"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.amia.mobile"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "scheme": "am-i-available",
+    "extra": {
+      "supabaseUrl": "https://cwpsafmbigglcsbpwawr.supabase.co",
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3cHNhZm1iaWdnbGNzYnB3YXdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNzIyMDAsImV4cCI6MjA3Mjc0ODIwMH0.8pe-ditIEk8aG9pYmknVP320Nqiwe0npYq2Ij6-lBW0"
+    }
+  }
+}
